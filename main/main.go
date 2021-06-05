@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/distatus/battery"
-	"go.uber.org/zap"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/distatus/battery"
+	"go.uber.org/zap"
 )
 
 type PowerStatus string
@@ -25,7 +26,7 @@ func main() {
 
 	initialStatusStr := os.Args[1]
 	powerStatus = PowerMain
-	if initialStatusStr == "gone" {
+	if initialStatusStr == "gen" {
 		powerStatus = PowerGenerator
 	}
 
@@ -34,7 +35,7 @@ func main() {
 	// Setup HTTP server
 	http.HandleFunc(
 		"/",
-		func (w http.ResponseWriter, req *http.Request) {
+		func(w http.ResponseWriter, req *http.Request) {
 			greenColorPage := "<!DOCTYPE html>\n<html>\n   <head>\n      <title>HTML Backgorund Color</title>\n   </head>\n   <body style=\"background-color:green;\">\n      <h1>Power Status: </h1>\n      <p>Main</p>\n   </body>\n</html>"
 			redColorPage := "<!DOCTYPE html>\n<html>\n   <head>\n      <title>HTML Backgorund Color</title>\n   </head>\n   <body style=\"background-color:red;\">\n      <h1>Power Status: </h1>\n      <p>Generator</p>\n   </body>\n</html>"
 			response := greenColorPage
@@ -47,7 +48,7 @@ func main() {
 			}
 		},
 	)
-	err := http.ListenAndServeTLS(":443","localhost.crt", "localhost.key", nil)
+	err := http.ListenAndServeTLS(":443", "localhost.crt", "localhost.key", nil)
 	zap.S().Errorf("Server existed with error: %v", err)
 }
 
