@@ -1,0 +1,31 @@
+<html>
+
+  <body>
+
+    <div>
+      <h1> Power Status <span id="status"></span>⚡ </h1>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase.js"></script>
+    <script>
+      var config = {
+        apiKey: 'Urd0NuKj1Y4SCb5QMyW0rcBqD5zgdGnuCp1uHUaX',
+        databaseURL: 'https://spp-power-source-default-rtdb.asia-southeast1.firebasedatabase.app',
+        projectId: 'spp-power-source',
+      };
+      const app = firebase.initializeApp(config);
+      app
+        .database()
+        .ref('/power-source')
+        .on('value', (snapshot) => {
+          const data = snapshot.val();
+          const state = data.source
+          let emoji = '✔️'
+          if (state === 'GEN') {
+            emoji = '❌'
+          }
+          document.getElementById('status').innerHTML = emoji
+        });
+    </script>
+  </body>
+</html>

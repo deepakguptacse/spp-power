@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 	"os"
@@ -77,6 +78,7 @@ func syncPowerStatus() {
 				} else {
 					powerStatus = PowerGenerator
 				}
+				updateStatus(string(powerStatus))
 			}
 		}
 		previousChargingStatus = currentChargingStatus
@@ -95,4 +97,23 @@ func chargingStatus() battery.State {
 		state = battery.Charging
 	}
 	return state
+}
+
+func updateStatus(newStatus string) {
+	json := fmt.Sprintf("{\"source\": \"%s\"}", newStatus)
+	client := &http.Client{}
+	req, err := http.NewRequest(
+		http.MethodPut,
+		"https://spp-power-source-default-rtdb.asia-southeast1.firebasedatabase.app/power-source.json",
+		bytes.NewBufferString(json),
+	)
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	if err != nil {
+		zap.S().Errorf("Couldn't create request: %v", err)
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		zap.S().Errorf("Couldn't update status: %v", err)
+	}
+	zap.S().Infof("Status update response: %v", resp)
 }
