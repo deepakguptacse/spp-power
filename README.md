@@ -14,13 +14,6 @@ The program exposes a HTTPS endpoint on port 443, which is:
 
 ## How to run the program locally:
 
-### Register the CA certificate locally:
-This is how I do it on Ubuntu:
-```
-sudo cp $REPO_DIR/localhost.crt /usr/local/share/ca-certificates/
-sudo update-ca-certificates
-```
-
 ### Run the server locally:
 ```
 sudo go run main/main.go <current-state>
@@ -28,10 +21,16 @@ sudo go run main/main.go <current-state>
 - `<current-state>` is main if the source of power is MAIN
 - `<current-state>` is gen if the source of power is GENERATOR
 
-Note: `sudo` is required because of the predefined port 443.
+Note: `sudo` is required because of the predefined port 80.
 
 Check the current electricity source:
 ```
 https://localhost:443
 ```
+
+### For client side changes:
+```
+firebase deploy
+```
+Please ask for access to the firebase project: deepakguptacse@gmail.com
 

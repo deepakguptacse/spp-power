@@ -49,7 +49,7 @@ func main() {
 			}
 		},
 	)
-	err := http.ListenAndServeTLS(":443", "localhost.crt", "localhost.key", nil)
+	err := http.ListenAndServe(":80", nil)
 	zap.S().Errorf("Server existed with error: %v", err)
 }
 
