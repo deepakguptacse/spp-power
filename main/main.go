@@ -31,7 +31,8 @@ func main() {
 		powerStatus = PowerGenerator
 	}
 
-	go syncPowerStatus()
+	go monitorPowerStatus()
+	go syncDB()
 
 	// Setup HTTP server
 	http.HandleFunc(
@@ -53,7 +54,7 @@ func main() {
 	zap.S().Errorf("Server existed with error: %v", err)
 }
 
-func syncPowerStatus() {
+func monitorPowerStatus() {
 	dischargingStartedTimestamp := time.Now()
 	previousChargingStatus := chargingStatus()
 	for {
@@ -93,10 +94,17 @@ func chargingStatus() battery.State {
 		return battery.Charging
 	}
 	state := batteries[0].State
-	if state == battery.Unknown {
+	if state == battery.Unknown || state == battery.Full {
 		state = battery.Charging
 	}
 	return state
+}
+
+func syncDB() {
+	for {
+		updateStatus(string(powerStatus))
+		time.Sleep(2 * time.Minute)
+	}
 }
 
 func updateStatus(newStatus string) {
